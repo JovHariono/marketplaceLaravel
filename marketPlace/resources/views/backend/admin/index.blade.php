@@ -31,17 +31,17 @@
                             <thead class="thead-light">
                                 <tr>
                                     <th style="width:1%">No.</th>
+                                    <th style="width:1%">Pembeli</th>
                                     <th style="width:1%">Nama Kelas</th>
                                     <th scope="col">Harga</th>
                                     <th style="width:10%">Status</th>
-                                    <th style="width:10%">Bayar</th>
-                                    <th style="width:10%">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
                                 @foreach ($Order as $Order)
                                     <tr>
                                         <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $Order->user->name }}</td>   
                                         <td>{{ $Order->kelas->nama_kelas }}</td>
                                         <td>@currency($Order->nominal) </td>
                                         <td>
@@ -49,25 +49,6 @@
                                                 <div class="badge badge-light-danger">Belum di bayar</div>
                                             @elseif ($Order->status == 1)
                                                 <div class="badge badge-light-success">Lunas</div>
-                                            @endif
-                                        </td>
-                                        <td>
-                                            <a href="#" class="badge badge-light-secondary btn-bayar"
-                                                data-snaptoken="{{ $Order->snaptoken }}">
-                                                <i class="fas fa-hand-holding-usd"></i>
-                                                Bayar
-                                            </a>
-                                        </td>
-                                        <td>
-                                            @if ($Order->status == 1)
-                                                <div class="badge badge-light-success">Pembayaran Telah Lunas</div>
-                                            @else
-                                                <form action="/siswa/pembayaran/{{ $Order->id }}" method="POST">
-                                                    @csrf
-                                                    <button onclick="hapusFunction()" class="btn btn-outline-danger btn-sm"
-                                                        type="submit"><i class="fas fa-trash-alt"></i>&nbsp Cancel
-                                                        Pembelian</button>
-                                                </form>
                                             @endif
                                         </td>
                                     </tr>
