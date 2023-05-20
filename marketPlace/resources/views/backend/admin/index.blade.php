@@ -34,25 +34,13 @@
                                     <th style="width:1%">Pembeli</th>
                                     <th style="width:1%">Nama Kelas</th>
                                     <th scope="col">Harga</th>
+                                    <th scope="col">SnapToken</th>
+                                    <th scope="col">Tanggal dibuat</th>
                                     <th style="width:10%">Status</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                @foreach ($Order as $Order)
-                                    <tr>
-                                        <td>{{ $loop->iteration }}</td>
-                                        <td>{{ $Order->user->name }}</td>   
-                                        <td>{{ $Order->kelas->nama_kelas }}</td>
-                                        <td>@currency($Order->nominal) </td>
-                                        <td>
-                                            @if ($Order->status == 3)
-                                                <div class="badge badge-light-danger">Belum di bayar</div>
-                                            @elseif ($Order->status == 1)
-                                                <div class="badge badge-light-success">Lunas</div>
-                                            @endif
-                                        </td>
-                                    </tr>
-                                @endforeach
+
                             </tbody>
                         </table>
                     </div>
@@ -68,6 +56,54 @@
     <script src="{{ asset('argon') }}/vendor/jquery/dist/jquery.min.js"></script>
     <script src="{{ asset('argon') }}/js/datatables.min.js "></script>
     <script>
+        $(function(){
+            var table = $('.datatable').DataTable({
+                processing: true,
+                serverSide: true,
+                ajax: {
+                    url: '{{ url("/admin/report") }}',
+                    type: 'GET',
+                    headers: { 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content') }
+                },
+                columns: [
+                    {data: 'DT_RowIndex', name: 'DT_RowIndex'},
+                    {data: 'user_id', name: 'user_id'},
+                    {data: 'kelas_id', name: 'kelas_id'},
+                    {data: 'nominal', name: 'nominal'},
+                    {data: 'snaptoken', name: 'snaptoken'},
+                    {data: 'created_at', name: 'created_at'},
+                    {data: 'status', name: 'status'}
+                ],
+                lengthMenu: [[10,25,50, 100, -1],[10,25,50, 100, "All"]]
+            })
+            // console.log()
+            // styling wrapper
+            //$('.dataTables_wrapper').addClass('py-2')
+    
+            //$('<div id="header-datatable" class="d-flex justify-content-between" ></div>').prependTo('.dataTables_wrapper')
+            $('.dataTables_length').appendTo('#header-datatable')
+            $('.dataTables_filter').appendTo('#header-datatable')
+    
+            // styling orderable
+            $('.dataTables_length label')[0].childNodes[0].nodeValue = ''
+            $('.dataTables_length label')[0].childNodes[2].nodeValue = ''
+            $('.dataTables_length').addClass('p-0')
+            $('.dataTables_length').css('float', 'none')
+            $('.dataTables_length select').addClass('form-control form-control-sm form-control-alternative')
+    
+            // styling filter
+            $('.dataTables_filter label')[0].childNodes[0].nodeValue = ''
+            $('.dataTables_filter input').addClass('form-control form-control-sm form-control-alternative')
+            $('.dataTables_filter input').attr('placeholder', 'search...')
+            $('.dataTables_filter').css('float', 'none')
+            $('.dataTables_filter').css('padding-right', '10px')
+    
+            // styling table
+            // $('.dataTable').removeClass('no-footer')
+        })
+    </script>
+    {{-- <script src="{{ asset('argon') }}/js/datatables.min.js "></script>
+    <script>
         $(document).ready(function() {
             $('.table-kontrak').DataTable({
                 "lengthMenu": [
@@ -76,64 +112,5 @@
                 ]
             });
         });
-    </script>
-    <script src="https://app.sandbox.midtrans.com/snap/snap.js" data-client-key="{{ config('midtrans.client_key') }}">
-    </script>
-    <script>
-        $('.btn-bayar').click(function(e) {
-            e.preventDefault();
-            var snaptoken = $(this).attr("data-snaptoken");
-            // alert(snaptoken);
-
-            snap.pay(snaptoken, {
-                // Optional
-                onSuccess: function(result) {
-                    /* You may add your own js here, this is just example */
-                    // document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
-                    console.log(result)
-                    window.location.reload();
-                },
-                // Optional
-                onPending: function(result) {
-                    /* You may add your own js here, this is just example */
-                    // document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
-                    console.log(result)
-                },
-                // Optional
-                onError: function(result) {
-                    /* You may add your own js here, this is just example */
-                    // document.getElementById('result-json').innerHTML += JSON.stringify(result, null, 2);
-                    console.log(result)
-                }
-            });
-        });
-    </script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.js"></script>
-    <link rel="stylesheet" type="text/css"
-        href="https://cdnjs.cloudflare.com/ajax/libs/sweetalert/1.1.3/sweetalert.min.css">
-    <script type="text/javascript">
-        function hapusFunction() {
-            event.preventDefault(); // prevent form submit
-            var form = event.target.form; // storing the form
-            swal({
-                    title: "Are you sure?",
-                    text: "Apakah Anda yakin akan menghapus data Pembayaran?",
-                    type: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#a90808",
-                    cancelButtonColor: "#87a182",
-                    confirmButtonText: "Ya, Hapus!",
-                    cancelButtonText: "Tidak, Jangan Hapus!",
-                    closeOnConfirm: false,
-                    closeOnCancel: false
-                },
-                function(isConfirm) {
-                    if (isConfirm) {
-                        form.submit(); // submitting the form when user press yes
-                    } else {
-                        swal("Cancelled", "Data Batal Terhapus!", "error");
-                    }
-                });
-        }
-    </script>
+    </script> --}}
 @endpush

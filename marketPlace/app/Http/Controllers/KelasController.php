@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\kelas;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Gate;
 
 class KelasController extends Controller
 {
@@ -15,6 +16,7 @@ class KelasController extends Controller
      */
     public function index()
     {
+        if(!Gate::allows('index-kelas')) abort(403, 'access denied');
         $Kelas = kelas::all();
         return view('backend.kelas.index', compact('Kelas'));
     }
@@ -26,6 +28,7 @@ class KelasController extends Controller
      */
     public function create()
     {
+        if(!Gate::allows('create-kelas')) abort(403, 'access denied');
         return view('backend.kelas.create');
     }
 
@@ -37,6 +40,7 @@ class KelasController extends Controller
      */
     public function store(Request $request)
     {
+        if(!Gate::allows('create-kelas')) abort(403, 'access denied');
         try {
             $Kelas = new kelas;
             $Kelas->nama_kelas = $request->nama_kelas;
@@ -69,6 +73,7 @@ class KelasController extends Controller
      */
     public function show($id)
     {
+        if(!Gate::allows('read-kelas')) abort(403, 'access denied');
         $Kelas = kelas::find($id);
 
         return view('backend.kelas.show', compact('Kelas'));
@@ -82,6 +87,7 @@ class KelasController extends Controller
      */
     public function edit($id)
     {
+        if(!Gate::allows('edit-kelas')) abort(403, 'access denied');
         $Kelas = kelas::find($id);
 
         return view('backend.kelas.edit', compact('Kelas'));
@@ -96,6 +102,7 @@ class KelasController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if(!Gate::allows('edit-kelas')) abort(403, 'access denied');
         try {
             $Kelas = kelas::find($id);
             $Kelas->nama_kelas = $request->nama_kelas;
@@ -145,6 +152,7 @@ class KelasController extends Controller
      */
     public function destroy($id)
     {
+        if(!Gate::allows('delete-kelas')) abort(403, 'access denied');
         try {
             $Kelas = kelas::find($id);
 

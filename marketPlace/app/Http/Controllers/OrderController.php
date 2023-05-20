@@ -1,22 +1,79 @@
 <?php
 //Auth fungsinya untuk mengambil id org yang log-in
+//eager load, method with('') memanggil relasi table dengan memanggil nama function pada model bukan nama model. 
 
 namespace App\Http\Controllers;
 
 use App\Models\kelas;
 use App\Models\order;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+
+use Yajra\DataTables\Facades\DataTables;
 
 class OrderController extends Controller
 {
 
-    public function report()
+    public function report(Request $request)
     {
-        $Order = order::all();
+        if(!Gate::allows('index-report')) abort(403, 'access denied');
+        // if(Auth::user()->level_id != 1) abort(403, 'access denied');
+        // $Order = order::all();
+        if ($request->ajax()) {
+            $data = order::with(['user', 'kelas'])->get();
+            return DataTables::of($data)
+                ->addIndexColumn()
+                ->editColumn('user_id', function ($data) {
+                    return $data->user->name;
+                })
+                ->editColumn('kelas_id', function ($data) {
+                    return $data->kelas->nama_kelas;
+                })
+                ->editColumn('nominal', function ($row) {
+                    $nominal = 'Rp. ' . number_format($row->nominal, 0, ',', '.');
+                    return $nominal;
+                })
+                ->editColumn('created_at', function ($row) {
+                    return $row->created_at ? with(new Carbon($row->created_at))->format('d M Y') : '';;
+                })
+                // ->addColumn('action', function($row){
+                //     $btn = '<a href="'. url('admin/kelas/' . $row->id ) .'" class="badge badge-light-secondary"><i class="fas fa-solid fa-eye"></i>
+                //     Lihat</a>';
+                //     return $btn;
+                // })
+                ->editColumn('status', function ($row) {
+                    if ($row->status == 3) {
+                        $status = '<div class="badge badge-warning">Belum Bayar</div>';
+                    } elseif ($row->status == 1) {
+                        $status = '<div class="badge badge-success">Lunas</div>';
+                    } else {
+                        $status = "-";
+                    }
+                    return $status;
+                })
+                ->rawColumns(['user_id', 'kelas_id', 'nominal', 'created_at', 'status'])
+                ->make(true);
+        }
 
-        return view('backend.admin.index', compact('Order'));
+        return view('backend.admin.index');
+        //     @foreach ($Order as $Order)
+        //     <tr>
+        //         <td>{{ $loop->iteration }}</td>
+        //         <td>{{ $Order->user->name }}</td>   
+        //         <td>{{ $Order->kelas->nama_kelas }}</td>
+        //         <td>@currency($Order->nominal) </td>
+        //         <td>
+        //             @if ($Order->status == 3)
+        //                 <div class="badge badge-light-danger">Belum di bayar</div>
+        //             @elseif ($Order->status == 1)
+        //                 <div class="badge badge-light-success">Lunas</div>
+        //             @endif
+        //         </td>
+        //     </tr>
+        // @endforeach
     }
 
     public function listKelas()
@@ -85,7 +142,7 @@ class OrderController extends Controller
 
     public function pembayaran()
     {
-        $Order = order::where('user_id', Auth::id())->get();
+        $Order = order::with('kelas')->where('user_id', Auth::id())->get();
 
         return view('backend.siswa.pembayaran', compact('Order'));
     }

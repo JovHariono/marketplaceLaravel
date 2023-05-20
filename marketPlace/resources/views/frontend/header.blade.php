@@ -56,6 +56,7 @@
                     <li><a class="nav-link scrollto" href="#about">About Us</a></li>
                     <li><a class="nav-link scrollto" href="#services">Services</a></li>
                     <li><a class="nav-link scrollto" href="#team">Class</a></li>
+                    <li><a class="nav-link scrollto" href="#recent-posts">Artikel</a></li>
                     <li><a class="nav-link scrollto" href="#contact">Contact</a></li>
                     <li><a class="nav-link scrollto" href="{{ url('/login') }}">Login</a></li>
                 </ul>

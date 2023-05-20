@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\artikel;
+use App\Models\category_artikel;
 use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Gate;
+use Illuminate\Support\Str;
 
 class ArtikelController extends Controller
 {
@@ -15,6 +18,8 @@ class ArtikelController extends Controller
      */
     public function index()
     {
+        if(!Gate::allows('index-artikel')) abort(403, 'access denied');
+        
         $Artikel = artikel::all();
         return view('backend.artikel.index', compact('Artikel'));
     }
@@ -26,7 +31,10 @@ class ArtikelController extends Controller
      */
     public function create()
     {
-        return view('backend.artikel.create');
+        if(!Gate::allows('create-artikel')) abort(403, 'access denied');
+
+        $Category = category_artikel::all();
+        return view('backend.artikel.create', compact('Category'));
     }
 
     /**
@@ -37,16 +45,20 @@ class ArtikelController extends Controller
      */
     public function store(Request $request)
     {
+        if(!Gate::allows('create-artikel')) abort(403, 'access denied');
+
         try {
             $Artikel = new artikel;
             $Artikel->judul = $request->judul;
+            $Artikel->category_id = $request->category_id;
+            $Artikel->slug = Str::slug($request->judul, '-');
             
             $foto = '';
             if ($request->hasFile('foto')) {
                 $file = $request->file('foto');
                 $originalName1 = time() . '.' . $file->getClientOriginalName();
                 $foto = $originalName1;
-                $file->move('uploads/foto', $foto);
+                $file->move('uploads/artikel', $foto);
             }
             $Artikel->foto = $foto;
             $Artikel->deskripsi = $request->deskripsi;
@@ -68,6 +80,7 @@ class ArtikelController extends Controller
      */
     public function show($id)
     {
+        if(!Gate::allows('read-artikel')) abort(403, 'access denied');
         $Artikel = artikel::find($id);
 
         return view('backend.artikel.show', compact('Artikel'));
@@ -81,9 +94,11 @@ class ArtikelController extends Controller
      */
     public function edit($id)
     {
+        if(!Gate::allows('edit-artikel')) abort(403, 'access denied');
         $Artikel = artikel::find($id);
+        $Category = category_artikel::all();
 
-        return view('backend.artikel.edit', compact('Artikel'));
+        return view('backend.artikel.edit', compact('Artikel', 'Category'));
     }
 
     /**
@@ -95,6 +110,7 @@ class ArtikelController extends Controller
      */
     public function update(Request $request, $id)
     {
+        if(!Gate::allows('edit-artikel')) abort(403, 'access denied');
         try {
             $Artikel = artikel::find($id);
             $Artikel->judul = $request->judul;
@@ -103,9 +119,9 @@ class ArtikelController extends Controller
                 $file = $request->file('foto');
                 $originalName1 = time() . '.' . $file->getClientOriginalName();
                 $foto = $originalName1;
-                $file->move('uploads/foto', $foto);
+                $file->move('uploads/artikel', $foto);
                 if ($Artikel->foto != '') {
-                    File::delete('uploads/foto/' . $Artikel->foto);
+                    File::delete('uploads/artikel/' . $Artikel->foto);
                 }
             } else {
                 $foto = $Artikel->foto;
@@ -130,11 +146,12 @@ class ArtikelController extends Controller
      */
     public function destroy($id)
     {
+        if(!Gate::allows('delete-artikel')) abort(403, 'access denied');
         try {
             $Artikel = artikel::find($id);
 
             if(!empty($Artikel->foto)){
-                File::delete('uploads/foto/' . $Artikel->foto);
+                File::delete('uploads/artikel/' . $Artikel->foto);
             }
 
             $Artikel->delete();

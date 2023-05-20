@@ -38,6 +38,14 @@
                         <form action="{{ url('/admin/artikel') }}" enctype="multipart/form-data" method="POST">
                             @csrf
                             <div class="form-group">
+                                <select class="form-control js-example-basic-single" name="category_id" required>
+                                    <option value="">-- PILIH KATEGORI ARTIKEL --</option>
+                                    @foreach($Category as $category)
+                                        <option value="{{ $category->id }}">{{ $category->nama_kategori }}</option>
+                                    @endforeach
+                                </select>
+                            </div>
+                            <div class="form-group">
                                 <label for="">Judul <span class="text-red">*</span></label>
                                 <input type="text" name="judul" placeholder="masukkan_judul"
                                     class="form-control" required>
@@ -73,5 +81,11 @@
             .catch(error => {
                 console.error(error);
             });
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+    <script>
+    $(document).ready(function() {
+        $('.js-example-basic-single').select2();
+    });
     </script>
 @endsection

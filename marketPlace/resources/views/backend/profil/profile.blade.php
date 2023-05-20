@@ -1,15 +1,15 @@
 @extends('layouts.argon')
 @section('content')
-<style>
-    .card-body .profile_img {
-    width: 150px;
-    height: 150px;
-    object-fit: cover;
-    margin: 2px auto;
-    border: 2px solid #ccc;
-    border-radius: 50%;
-}
-</style>
+    <style>
+        .card-body .profile_img {
+            width: 150px;
+            height: 150px;
+            object-fit: cover;
+            margin: 2px auto;
+            border: 2px solid #ccc;
+            border-radius: 50%;
+        }
+    </style>
     <!-- Header -->
     <div class="header bg-primary pb-6">
         <div class="container-fluid">
@@ -39,7 +39,9 @@
                             </tr>
                             <tr>
                                 <th>Foto Profil</th>
-                                <th><img class="m-2 shadow profile_img" src="{{ url('uploads/foto_profil/'. auth()->user()->foto_profil) }}" id="previewpicture"><br></th>
+                                <th><img class="m-2 shadow profile_img"
+                                        src="{{ url('uploads/foto_profil/' . auth()->user()->foto_profil) }}"
+                                        id="previewpicture"><br></th>
                             </tr>
                         </table>
                         <hr>
@@ -48,9 +50,22 @@
                         <form action="{{ url('/admin/profile') }}" enctype="multipart/form-data" method="post">
                             @csrf
                             <label for="">Nama </label>
-                            <input type="text" class="form-control" name="name" value="{{ auth()->user()->name}}">
+                            <input type="text" class="form-control" name="name" value="{{ auth()->user()->name }}">
                             <label for="">Email <span class="text-danger"><i>*</i></span></label>
-                            <input type="email" class="form-control" required name="email" value="{{ auth()->user()->email }}">
+                            <input type="email" class="form-control" required name="email"
+                                value="{{ auth()->user()->email }}">
+                            <label for="">Alamat</label>
+                            @if ($profile['alamat'] == 'kosong')
+                                <textarea name="alamat" class="form-control" id="" cols="30" rows="10"></textarea>
+                            @else
+                                <textarea name="alamat" class="form-control" id="" cols="30" rows="10">{{ $profile->alamat }}</textarea>
+                            @endif
+                            <label for="">No Handphone</label>
+                            @if ($profile['no_hp'] == 'kosong')
+                                <input type="text" class="form-control" name="no_hp">
+                            @else
+                                <input type="text" class="form-control" name="no_hp" value="{{ $profile->no_hp }}">
+                            @endif
                             <label>Foto Profile <span class="text-primary"><i>*</i></span></label>
                             <input type="file" class="form-control" name="foto_profil">
                             <span class="text-danger">*Abaikan input apabila tidak ingin mengubah Foto Profile</span>
@@ -61,9 +76,11 @@
                             <br><br>
                             <div class="card-body">
                                 <div class="form-group">
-                                    <a href="{{ url('/home') }}" class="btn btn-warning" type="submit"><i class="fas fa-backward"></i>&nbsp Kembali</a>
+                                    <a href="{{ url('/home') }}" class="btn btn-warning" type="submit"><i
+                                            class="fas fa-backward"></i>&nbsp Kembali</a>
                                     {{-- <button type="submit" class="btn btn-info" name="again">Simpan & Tambah Lagi</button> --}}
-                                    <button type="submit" class="btn btn-primary btn-save"><i class="fa fa-save"></i> Simpan</button>
+                                    <button type="submit" class="btn btn-primary btn-save"><i class="fa fa-save"></i>
+                                        Simpan</button>
                                 </div>
                             </div>
                         </form>

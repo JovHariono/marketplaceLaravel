@@ -298,7 +298,7 @@
                                 <p>{!! $Kelas->desktripsi !!}</p>
                                 <div class="trainer d-flex justify-content-between align-items-center">
                                     <div class="content">
-                                        <a href="{{url('/login')}}" class="courses-btn">Buy <i
+                                        <a href="{{ url('/login') }}" class="courses-btn">Buy <i
                                                 class="bx bx-chevron-right"></i></a>
                                     </div>
                                 </div>
@@ -308,6 +308,42 @@
                 @endforeach
             </div>
     </section>
+
+    <!-- ======= Recent Blog Posts Section ======= -->
+    <section id="recent-posts" class="recent-posts">
+        <div class="container" data-aos="fade-up">
+            <div class="section-title">
+                <h2>Artikel</h2>
+            </div>
+
+            <div class="row gy-5">
+                @foreach ($Artikel as $artikel)
+                    <div class="col-xl-3 col-md-6" data-aos="fade-up" data-aos-delay="100">
+                        <div class="post-box">
+                            <div class="post-img">
+                                <img src="{{ asset('uploads/artikel/' . $artikel->foto) }}" class="img-fluid"
+                                    alt="" />
+                            </div>
+                            <div class="meta">
+                                <span class="post-date">{{ $artikel->created_at->format('d M Y') }}</span>
+                                <span class="post-author">
+                                    / {{ $artikel->category->nama_kategori }}</span>
+                            </div>
+                            <h3 class="post-title">
+                                {{ $artikel->judul }}
+                            </h3>
+                            <p>
+                                {!! $artikel->deskripsi !!}
+                            </p>
+                            <a href="{{ url('/artikel-detail/' . $artikel->slug)}}" class="readmore stretched-link"><span>Read More</span><i
+                                    class="bi bi-arrow-right"></i></a>
+                        </div>
+                    </div>
+                @endforeach
+            </div>
+        </div>
+    </section>
+    <!-- End Recent Blog Posts Section -->
 
     <!-- ======= Contact Section ======= -->
     <section id="contact" class="contact section-bg">

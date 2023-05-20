@@ -7,7 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Http\Controllers\{
     KelasController, ArtikelController,
     FrontendController,
-    OrderController
+    OrderController, CategoryController, RoleAksesController
 };
 
 /*
@@ -23,6 +23,12 @@ use App\Http\Controllers\{
 
 Route::get('/', [FrontendController::class, 'index']);
 
+// Route::get('/artikel', function(){
+//     return view('frontend.artikel-details');
+// });
+
+Route::get('/artikel-detail/{slug}', [FrontendController::class, 'detailArtikel']);
+
 Auth::routes();
 
 Route::middleware(['auth'])->group(function () {
@@ -36,6 +42,10 @@ Route::middleware(['auth'])->group(function () {
 
     Route::post('/admin/profile', [ProfilController::class, 'updateProfile']);
 
+    Route::get('/admin/profile/create_detail', [ProfilController::class, 'index_detail']);
+
+    Route::post('/admin/profile/create_detail', [ProfilController::class, 'detail_post']);
+
     Route::get('/siswa/list-kelas', [OrderController::class, 'listKelas']);
     
     Route::get('/siswa/detail-kelas/{id}', [OrderController::class, 'detailKelas']);
@@ -47,4 +57,13 @@ Route::middleware(['auth'])->group(function () {
     Route::post('/siswa/pembayaran/{id}', [OrderController::class, 'hapusPembayaran']);
 
     Route::get('/admin/report', [OrderController::class, 'report']);
+
+    Route::resource('/admin/category', CategoryController::class);
+
+    // Role Management
+    Route::get('/admin/role-akses', [RoleAksesController::class, 'index']);
+    
+    Route::get('/admin/role-akses/{id}', [RoleAksesController::class, 'show'])->whereNumber('id');
+    
+    Route::post('/admin/role-akses/{id}', [RoleAksesController::class, 'store_update'])->whereNumber('id');
 });

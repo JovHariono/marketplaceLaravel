@@ -132,6 +132,15 @@
                 </li> -->
                 @if (Auth::user()->level_id == 1)
                     <li class="nav-item">
+                        <a class="nav-link {{ request()->is('admin/category*') ? 'active' : '' }}"
+                            href="{{ url('/admin/category') }}">
+                            <i class="far fa-newspaper text-blue"></i>Category
+                        </a>
+                    </li>
+                @endif
+
+                @if (Auth::user()->level_id == 1)
+                    <li class="nav-item">
                         <a class="nav-link {{ request()->is('admin/artikel*') ? 'active' : '' }}"
                             href="{{ url('/admin/artikel') }}">
                             <i class="far fa-newspaper text-blue"></i>Artikel
@@ -170,6 +179,15 @@
                         <i class="fas fa-list text-blue"></i>Pembayaran
                     </a>
                 </li>
+
+                @if (Auth::user()->level_id == 1)
+                    <li class="nav-item">
+                        <a class="nav-link {{ request()->is('admin/role-akses*') ? 'active' : '' }}"
+                            href="{{ url('/admin/role-akses') }}">
+                            <i class="far fa-newspaper text-blue"></i>Role Akses
+                        </a>
+                    </li>
+                @endif
 
                 <!-- <li class="nav-item">
                     <a class="nav-link" href="#navbar-examples" data-toggle="collapse" role="button" aria-expanded="false" aria-controls="navbar-examples">

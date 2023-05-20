@@ -45,8 +45,13 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <img class="m-2 shadow profile_img" src="{{ url('uploads/foto/' . $Artikel->foto) }}"
+                        <img class="m-2 shadow profile_img" src="{{ url('uploads/artikel/' . $Artikel->foto) }}"
                             id="previewpicture"><br>
+                        <div class="form-group">
+                            <label>Kategori Artikel<span class="text-danger"><i>*</i></span></label>
+                            <input class="form-control" type="text" readonly
+                                value="{{ $Artikel->category->nama_kategori }}">
+                        </div>
                         <div class="form-group">
                             <label for="">Judul <span class="text-red">*</span></label>
                             <input type="text" name="judul" placeholder="Ex. ( SMA )" class="form-control"
@@ -80,17 +85,17 @@
 @endsection
 
 @section('script')
-<script>
-    ClassicEditor
-        .create( document.querySelector( '#task-textarea' ) )
-        .then( editor => {
-            editor.enableReadOnlyMode( 'my-feature-id' );
-            editor.isReadOnly;
-        } )
-        .catch( error => {
-            console.error( error );
-        } );
-</script>
+    <script>
+        ClassicEditor
+            .create(document.querySelector('#task-textarea'))
+            .then(editor => {
+                editor.enableReadOnlyMode('my-feature-id');
+                editor.isReadOnly;
+            })
+            .catch(error => {
+                console.error(error);
+            });
+    </script>
 @endsection
 
 @push('js')
